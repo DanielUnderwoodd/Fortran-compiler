@@ -1,0 +1,564 @@
+
+
+package cup.example;
+
+/* importing CUP library */
+import java_cup.runtime.*;
+import cup.example.Lexer;
+import java.io.IOException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.ArrayList;
+
+
+
+
+
+
+
+
+
+
+
+
+action code {:
+
+    ArrayList<Function> table = new ArrayList<Function>();
+ 	ArrayList<Type> 	table1 =new ArrayList<Type>();
+    ArrayList<Type_map> 	type_map =new ArrayList<Type_map>();
+    ArrayList<Type_map_define> 	type_map_define =new ArrayList<Type_map_define>();
+
+
+
+	public void check1(String name,int type1){
+  	
+
+   int i;
+   int counter =0;
+   
+   
+       for (i =0;i<table1.size();i++){
+        if(table1.get(i).variable_name.equals(name)){
+          counter++;
+          if( table1.get(i).value_type.equals("int")){
+           System.out.println("variable assigment is correct and " + name + " and " +  type1);
+			}else {
+         System.out.println("variable assigment is incorrect and " + name + " and " +  table1.get(i).value_type);
+				}
+ 
+		}
+
+	}
+
+}
+	public void check2(String name,String type1){
+
+
+
+  
+   int i;
+   int counter =0;
+       for (i =0;i<table1.size();i++){
+        if(table1.get(i).variable_name.equals(name)){
+          counter++;
+          if( table1.get(i).value_type.equals("String")){
+           System.out.println("variable assigment is correct and " + name + " and " +  type1);
+			}else {
+         System.out.println("variable assigment is incorrect and " + name + " and " +  table1.get(i).value_type);
+				}
+ 
+		}
+
+	}
+
+}
+
+	public   void check(String name,String arg){
+    int i;
+   int  k = 0;
+    int counter =0;
+    int count =0;
+    int counter_sub = 0;
+    int j = 0;
+
+    	for (i =0;i<table.size();i++){
+        if(table.get(i).FunctionName.equals(name)){
+             count =i ;
+             counter = counter + 1;
+           } 
+ 
+		}
+   
+  
+	  if(counter == 1){
+
+       System.out.println("found the function");
+
+    	for (j=0;j<arg.length();j++){
+        
+    	if(arg.charAt(j)==','){
+          
+      	counter_sub++;
+     }
+  
+     }
+
+     if(counter_sub + 1 == table.get(count).NumArg) {
+
+       System.out.println("Arg of function is correct");
+        for (k =0 ; k<type_map_define.size();k++){
+           type_map_define.get(k).value_type = type_map.get(k).value_type;
+
+		}
+          		for( j=0;j<type_map_define.size();j++){
+   					for(i=0;i<table1.size();i++) {
+                          if(type_map_define.get(j).variable_name.equals(table1.get(i).variable_name) ){
+                                
+                                  if(type_map_define.get(j).value_type.equals( table1.get(i).value_type) ) {
+                                        System.out.println(" variable  " + type_map_define.get(j).variable_name + " definition is correct and function name is " + type_map_define.get(j).FunctionName);
+                                      }else {
+                                            System.out.println( " variable " + type_map_define.get(j).variable_name + " type is incorrect and must be " + type_map_define.get(j).value_type);
+                                          }
+							}else {
+                                     if(table1.size() == i + 1 ) {
+
+                                           System.out.println( " variable " + type_map_define.get(j).variable_name + " it is not define in function  " + type_map_define.get(j).FunctionName);
+										}
+
+                                      
+
+                                  }
+
+					}
+     	}
+               
+      }else {
+    	System.out.println("Arg of function is incorrect");
+        }
+
+
+	}else
+       {
+        
+       System.out.println("function is not define or more than 1 function defined");
+     }
+
+
+   }
+:};
+
+
+
+
+
+
+
+/* Connect this parser to a scanner! */
+parser code {:
+  protected Lexer lexer;
+:}
+
+/* define how to connect to the scanner! */
+init with {:
+  ComplexSymbolFactory f = new ComplexSymbolFactory();
+  symbolFactory = f;
+  File file = new File("input.txt");
+  FileInputStream fis = null;
+  try {
+    fis = new FileInputStream(file);
+  } catch (IOException e) {
+    e.printStackTrace();
+  }
+  lexer = new Lexer(f,fis);
+:};
+scan with {: return lexer.next_token(); :};
+/* Terminals (tokens returned by the scanner). */
+terminal CO, PLUS, MINUS, UMINUS, TIMES, LPAREN, RPAREN,IF,ELSE,WHILE,DO,TPOINT,END,READ;
+terminal PRINT,THEN,PROGRAM,INT,CHARACTER,FUNCTION,EQ,NOTEQ,LTEQ,GTEQ,ENDDO,ENDIF,ELSEIF,IMPLI,EQ2,ENDPROGRAM,ENDFUNCTION,GT;
+terminal LT;
+
+
+terminal Integer    INTEGER_LIT;
+terminal String     IDENT;
+terminal String     STRING_LIT;
+
+
+/* Nonterminals (other terms to reach to Terminals). */
+non terminal            begin;
+non terminal            decision;
+non terminal            main_statements;
+non terminal            main_statement;
+non terminal java.lang.String      statement;
+non terminal java.lang.String      statements;
+non terminal java.lang.String         type;
+non terminal            function;
+non terminal java.lang.String      variable_declarator;
+non terminal java.lang.String      variable_declarator_name;
+non terminal java.lang.String      variable_declarators;
+non terminal            comparative_expression;
+non terminal            comparative_operator;
+non terminal            equality_expression;
+non terminal            equality_operator;
+non terminal java.lang.String       character;
+non terminal java.lang.String       arg;
+non terminal            if_dec;
+non terminal            do_statement;
+non terminal            while_statement;
+non terminal            assignment;
+non terminal            literal;
+non terminal            expression;
+non terminal java.lang.String       lefth;
+non terminal java.lang.String       field_dec;
+non terminal            read_statement;
+non terminal            print_statement;
+non terminal            relational_expression;
+non terminal            arg2;
+non terminal Integer       calculation;
+non terminal            assign;
+non terminal            function_call;
+non terminal            left_side;
+non terminal            right_side;
+non terminal java.lang.String         arg_function_call;
+non terminal java.lang.String         sub_arg;
+
+precedence left PLUS, MINUS;
+precedence left TIMES;
+
+
+
+start with begin;
+
+
+
+
+begin ::=	PROGRAM IDENT IMPLI decision ENDPROGRAM IDENT
+	;
+
+
+decision ::= main_statements
+	;
+
+
+  main_statements ::= statements
+
+  
+    ;
+
+
+statements ::= statement:e1 {: RESULT = e1 ;:}
+
+| statements:e1 statement:e2 {:RESULT= e1 + e2; :}
+;
+
+
+  statement ::= field_dec:e1    {:RESULT = e1; :}
+ | function
+ | assignment 
+ | if_dec      
+ | do_statement 
+ | while_statement 
+ | print_statement
+ | read_statement  
+ | function_call
+ 
+
+;
+
+function_call::= IDENT:e1 LPAREN arg_function_call:e2 RPAREN
+
+{:   
+int j =0;
+int i =0;
+ int pointer =0;
+ String Local ;
+ System.out.println(e2.length());
+ int counter = 0;
+for (i=0;i<e2.length();i++){
+   if(e2.charAt(i) ==','){
+    counter++;
+	}
+
+}
+
+  if(counter > 0)  {
+     for (i=0;i<e2.length();i++){
+      if(e2.charAt(i) ==',' || e2.length() - 1 == i ){
+       Local = e2.substring(pointer,i);
+       if(e2.length() - 1 == i) {
+       Local = e2.substring(pointer,i+1);
+        
+			}
+       
+       for(j=0;j<table1.size();j++)  {
+           
+         
+        
+        if( Local.equals(table1.get(j).variable_name) ) {
+         Type_map type = new Type_map(table1.get(j).value_type,Local,e1) ;
+         type_map.add(type);
+          
+		}
+		}
+       pointer = i+1;
+    }
+    
+	}
+
+	}else {
+      for(j=0;j<table1.size();j++){
+
+          if( e2 == table1.get(j).variable_name ){
+
+
+            Type_map type = new Type_map(table1.get(j).value_type,e2,e1) ;
+            type_map.add(type);
+
+		}
+
+		}
+
+      
+    
+  
+	}
+ 
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+ check(e1,e2);
+
+
+	
+	
+
+
+ :}
+
+;
+
+
+assignment ::= IDENT:e1 EQ calculation:e2 {: RESULT = e1 + "=" + e2 ; 
+      check1(e1,e2);
+
+  
+:}
+   
+   | IDENT:m EQ STRING_LIT:n {:RESULT = m + "=" + n ;
+        check2(m,n);
+
+:}
+  ;
+  
+  
+  calculation ::= INTEGER_LIT:e1 PLUS calculation:e2
+ | INTEGER_LIT:e1 MINUS calculation:e2
+ | INTEGER_LIT:e1 TIMES calculation:e2
+ | INTEGER_LIT:e  {: RESULT = e; :}
+ 
+ 
+ ;
+
+character ::= IDENT:i {: RESULT = i; :}
+;
+
+ literal ::= INTEGER_LIT
+ | IDENT
+ ;
+ 
+
+field_dec::= type:e1 TPOINT variable_declarators:e2  {:
+
+ int i =0;
+ int pointer =0;
+ String Local ;
+ int counter = 0;
+for (i=0;i<e2.length();i++){
+   if(e2.charAt(i) ==','){
+    counter++;
+	}
+
+}
+
+  if(counter > 0)  {
+     for (i=0;i<e2.length();i++){
+      if(e2.charAt(i) ==',' || e2.length() - 1 == i ){
+       Local = e2.substring(pointer,i);
+       if(e2.length() - 1 == i) {
+       Local = e2.substring(pointer,i+1);
+			}
+        
+       Type type = new Type(e1,Local) ;
+       table1.add(type);
+       pointer = i+1;
+    }
+    
+	}
+
+	}else {
+      
+     Type type = new Type(e1,e2) ;
+     table1.add(type);
+  
+	}
+ 
+    
+ :}      
+;
+
+type::= INT:n   {: RESULT = "int" ;:}
+ | CHARACTER:n {: RESULT = "String"; :}
+ ;
+
+
+variable_declarators ::= variable_declarator: n {:RESULT = n ;:}
+ |	lefth:m CO variable_declarator:n  {: RESULT = m + "," + n ;:}
+;
+
+
+lefth ::= variable_declarator_name:n   {: RESULT=n ;:}
+  | lefth:m CO variable_declarator_name:n  {: RESULT =  m + "," + n ;:}
+  ;
+
+ variable_declarator::= variable_declarator_name:n {:RESULT = n ;:}
+ 
+ ;
+
+variable_declarator_name ::= IDENT:n   {:RESULT=n ;:}
+;
+//loop do
+do_statement ::= DO IDENT EQ INTEGER_LIT CO literal  statements ENDDO
+;
+
+
+//while_statement 
+
+while_statement ::= DO WHILE LPAREN expression RPAREN statements ENDDO ;
+
+
+//precedence
+function ::=   FUNCTION character:e2 LPAREN arg:e1 RPAREN statements:e3 ENDFUNCTION character
+ 
+{:     
+int j =0;
+int i =0;
+ int pointer =0;
+ String Local ;
+ int counter = 0;
+for (i=0;i<e1.length();i++){
+   if(e1.charAt(i) ==','){
+    counter++;
+	}
+
+}
+
+  if(counter > 0)  {
+     for (i=0;i<e1.length();i++){
+      if(e1.charAt(i) ==',' || e1.length() - 1 == i ){
+       Local = e1.substring(pointer,i);
+       if(e1.length() - 1 == i) {
+       Local = e1.substring(pointer,i+1);
+			}
+         {
+
+         Type_map_define type = new Type_map_define(Local,e2,null) ;
+         type_map_define.add(type);
+		}
+		
+       pointer = i+1;
+    }
+    
+	}
+
+	}else {
+
+            Type_map_define type = new Type_map_define(e1,e2,null) ;
+            type_map_define.add(type);
+
+		}
+
+ 
+
+
+
+
+Function obj = new Function(0,e2,e1) ;
+   table.add(obj);
+
+  :}
+;
+
+
+
+if_dec ::= IF  LPAREN expression RPAREN THEN statements ENDIF
+ | IF  LPAREN  expression RPAREN THEN statements ELSE statements ENDIF
+ | IF  LPAREN  expression RPAREN THEN statements ELSEIF statements ELSE ENDIF
+ ;
+
+expression ::= relational_expression
+  | 	comparative_expression
+  | equality_expression
+  ;
+
+  comparative_expression ::=
+  left_side  comparative_operator right_side
+  ;
+  
+  left_side ::= literal;
+  right_side ::= literal;
+comparative_operator ::= GT
+  | LT
+  | GTEQ
+  | LTEQ
+  ;
+
+  equality_expression ::=	
+  literal equality_operator literal
+  ;
+
+equality_operator ::= EQ2
+  | NOTEQ
+  ;
+//
+print_statement ::= PRINT TIMES CO assign
+;
+
+read_statement ::= READ arg2 CO arg 
+  ;
+
+ arg ::= IDENT:i {: RESULT=i ; :} 
+ | arg:a CO IDENT:i {: RESULT = a + "," + i ; :}
+;
+
+arg_function_call::= sub_arg:a  {: RESULT=a; :} 
+| arg_function_call:i CO sub_arg:a {: RESULT = i + "," + a ; :}
+;
+
+sub_arg ::= IDENT:i {: RESULT=i ; :} 
+| INTEGER_LIT :i    {: RESULT=i.toString() ; :} 
+| STRING_LIT:i       {: RESULT=i ; :} 
+;
+
+
+
+arg2 ::= TIMES 
+ | LPAREN arg2 CO TIMES RPAREN 
+ ;
+
+
+
+
+assign ::= variable_declarators 
+ | STRING_LIT
+ ;
+ 
+ 

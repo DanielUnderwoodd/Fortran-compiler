@@ -1,0 +1,48 @@
+program printer
+implicit none 
+
+integer :: a,b,c
+integer :: temp
+temp =  2
+character :: str
+
+
+
+
+
+
+
+str = "999"
+a = 0
+
+function printer(r,s,u,z) 
+integer :: r
+r = "00"
+
+print *,"enter an integer"
+read  (*,*),a
+print *,"enter an integer for loop"
+read *,a
+print *,"enter an integer for compare"
+read *,b
+
+do i =1,x
+if(b>c) then 
+print *,str
+else
+temp = 1
+end if
+end do
+if (temp == 1) then 
+print *,"bye"
+end if 
+end function printer
+
+
+printer(a,b,c,str)
+
+
+
+
+
+ end program printer
